@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "python-grpc-asycnio"
+name = "python-gRPC-asycnio"
 version = "0.1.0"
 description = ""
 authors = ["ErEr <jeffliao92316046@gmail.com>"]
