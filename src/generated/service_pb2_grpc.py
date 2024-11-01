@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-from . import message_pb2 as message__pb2
+from . import service_pb2 as service__pb2
 
 GRPC_GENERATED_VERSION = '1.67.0'
 GRPC_VERSION = grpc.__version__
@@ -18,14 +18,14 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in message_pb2_grpc.py depends on'
+        + f' but the generated code in service_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
     )
 
 
-class MessageSenderStub(object):
+class ExampleServiceStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -34,46 +34,43 @@ class MessageSenderStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.GetMessageResponse = channel.unary_unary(
-                '/message.MessageSender/GetMessageResponse',
-                request_serializer=message__pb2.Message.SerializeToString,
-                response_deserializer=message__pb2.MessageResponse.FromString,
+        self.SendData = channel.unary_unary(
+                '/example.ExampleService/SendData',
+                request_serializer=service__pb2.Request.SerializeToString,
+                response_deserializer=service__pb2.Response.FromString,
                 _registered_method=True)
 
 
-class MessageSenderServicer(object):
+class ExampleServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def GetMessageResponse(self, request, context):
-        """A simple RPC.
-
-        Obtains the MessageResponse at a given position.
-        """
+    def SendData(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_MessageSenderServicer_to_server(servicer, server):
+def add_ExampleServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetMessageResponse': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetMessageResponse,
-                    request_deserializer=message__pb2.Message.FromString,
-                    response_serializer=message__pb2.MessageResponse.SerializeToString,
+            'SendData': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendData,
+                    request_deserializer=service__pb2.Request.FromString,
+                    response_serializer=service__pb2.Response.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'message.MessageSender', rpc_method_handlers)
+            'example.ExampleService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('message.MessageSender', rpc_method_handlers)
+    server.add_registered_method_handlers('example.ExampleService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class MessageSender(object):
+class ExampleService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def GetMessageResponse(request,
+    def SendData(request,
             target,
             options=(),
             channel_credentials=None,
@@ -86,9 +83,9 @@ class MessageSender(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/message.MessageSender/GetMessageResponse',
-            message__pb2.Message.SerializeToString,
-            message__pb2.MessageResponse.FromString,
+            '/example.ExampleService/SendData',
+            service__pb2.Request.SerializeToString,
+            service__pb2.Response.FromString,
             options,
             channel_credentials,
             insecure,

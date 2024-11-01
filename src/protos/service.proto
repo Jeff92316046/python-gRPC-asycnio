@@ -1,0 +1,16 @@
+// file: service.proto
+syntax = "proto3";
+
+package example;
+
+service ExampleService {
+  rpc SendData (Request) returns (Response);
+}
+
+message Request {
+  string message = 1;
+}
+
+message Response {
+  string reply = 1;
+}
