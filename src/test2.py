@@ -6,15 +6,15 @@ import generated.service_pb2_grpc as service_pb2_grpc
 # Server Implementation
 class ExampleService(service_pb2_grpc.ExampleServiceServicer):
     async def SendData(self, request, context):
-        print(f"Server 收到數據: {request.message}")
+        print(f"\rServer 收到數據: {request.message}\n請輸入數據: ",end='')
         return service_pb2.Response(reply="已收到: " + request.message)
 
 async def serve(port):
     server = grpc.aio.server()
     service_pb2_grpc.add_ExampleServiceServicer_to_server(ExampleService(), server)
     server.add_insecure_port(f"[::]:{port}")
-    await server.start()
     print(f"gRPC 服務啟動在埠號 {port}")
+    await server.start()
     await server.wait_for_termination()
 
 # Client Implementation
@@ -29,7 +29,7 @@ async def send_requests(port):
 
             try:
                 response = await stub.SendData(service_pb2.Request(message=user_input))
-                print(f"Client 收到回應: {response.reply}")
+                # print(f"Client 收到回應: {response.reply}")
             except grpc.aio.AioRpcError as e:
                 print(f"請求錯誤: {e.code()} - {e.details()}")
 
