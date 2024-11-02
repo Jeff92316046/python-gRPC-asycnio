@@ -1,27 +1,18 @@
-from concurrent import futures
-from generated.message_pb2 import (
-    Message,
-    MessageResponse
-)
-import generated.message_pb2_grpc as message_pb2_grpc
 import grpc
+import utils.utils as util
+import generated.service_pb2 as service_pb2
+import generated.service_pb2_grpc as service_pb2_grpc
 
-class MessageSender(message_pb2_grpc.MessageSender):
-    def __init__(self):
-        pass
 
-    def GetMessageResponse(self, request, context):
-
-        # get the string from the incoming request
-        message = request.message
-        result = f'received `{message}` message from you'
-        print(result)
-        return MessageResponse(message=result)
-
-def run_server():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    message_pb2_grpc.add_MessageSenderServicer_to_server(MessageSender(), server)
-    server.add_insecure_port('[::]:8787')
-    server.start()
-    server.wait_for_termination()
-
+class ExampleService(service_pb2_grpc.ExampleServiceServicer):
+    async def SendData(self, request, context):
+        print(f"\rServer 收到數據: {request.message}\n請輸入數據: ",end='')
+        return service_pb2.Response(reply="已收到: " + request.message)
+    
+async def serve(port):
+    server = grpc.aio.server()
+    service_pb2_grpc.add_ExampleServiceServicer_to_server(ExampleService(), server)
+    ip = util.get_internal_ip()
+    server.add_insecure_port(f"{ip}:{port}")
+    await server.start()
+    await server.wait_for_termination()
